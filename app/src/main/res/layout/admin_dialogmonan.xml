@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+    <TextView
+    android:id="@+id/txtTieuDeDialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="THÔNG TIN MÓN ĂN"
+    android:textStyle="bold"
+    android:layout_gravity="center"
+    android:layout_marginBottom="15dp"
+    android:textSize="18sp"/>
+
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher"
+        android:background="#EEEEEE"/>
+
+    <EditText android:id="@+id/edtTen" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Tên món ăn"/>
+    <EditText android:id="@+id/edtGia" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Giá tiền" android:inputType="number"/>
+    <EditText android:id="@+id/edtMoTa" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Mô tả món ăn"/>
+
+    <EditText android:id="@+id/edtHinh" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Tên file ảnh (vd: mb_pho_bo)"/>
+
+    <EditText android:id="@+id/edtLoai" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Mã miền (1: Bắc, 2: Trung, 3: Nam)" android:inputType="number"/>
+
+    <Button
+        android:id="@+id/btnLuu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LƯU THÔNG TIN"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="#2E7D32"
+        android:textColor="#FFFFFF"/>
+</LinearLayout>
