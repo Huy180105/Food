@@ -1,10 +1,12 @@
-package com.nhom8.foody_order_app.activity.ActivityImpl;
+package com.nhom8.foody_order_app.activity.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.nhom8.foody_order_app.R;
 
 public class admin_qlymonan extends AppCompatActivity {
 

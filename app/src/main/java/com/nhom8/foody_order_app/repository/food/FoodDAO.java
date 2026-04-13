@@ -20,7 +20,7 @@ public class FoodDAO {
         String query = "SELECT * FROM tblFood WHERE id=" + id;
         Cursor cursor = dbHelper.getDataRow(query);
 
-        if (cursor != null && cursor.moveToFirst()) {
+        if (cursor != null && !cursor.isAfterLast()) {
             return new Food(
                     cursor.getInt(0),
                     cursor.getString(1),
@@ -33,10 +33,9 @@ public class FoodDAO {
         return null;
     }
 
-    public ArrayList<Food> getFoodByRestaurant(int restaurantId) {
+    public ArrayList<Food> getAllFood() {
         ArrayList<Food> list = new ArrayList<>();
-
-        String query = "SELECT * FROM tblFood WHERE restaurant_id=" + restaurantId;
+        String query = "SELECT * FROM tblFood";
         Cursor cursor = dbHelper.getData(query);
 
         while (cursor.moveToNext()) {
@@ -49,32 +48,37 @@ public class FoodDAO {
                     cursor.getInt(5)
             ));
         }
-
         return list;
     }
 
-    public ArrayList<Food> searchFood(String keyword) {
-        return searchFood(keyword, null);
-    }
-
-    public ArrayList<Food> searchFood(String keyword, Integer restaurantId) {
+    public ArrayList<Food> searchFood(String keyword, String type) {
         ArrayList<Food> list = new ArrayList<>();
 
         String query = "SELECT * FROM tblFood WHERE name LIKE '%" + keyword + "%'";
-        if (restaurantId != null) {
-            query += " AND restaurant_id=" + restaurantId;
+        if (type != null && !type.isEmpty()) {
+            query += " AND type='" + type + "'";
         }
         Cursor cursor = dbHelper.getData(query);
 
-        while (cursor.moveToNext()) {
-            list.add(new Food(
-                    cursor.getInt(0),
-                    cursor.getString(1),
-                    cursor.getString(2),
-                    cursor.getBlob(3),
-                    cursor.getString(4),
-                    cursor.getInt(5)
-            ));
+        if (cursor != null) {
+            try {
+                while (cursor.moveToNext()) {
+                    list.add(new Food(
+                            cursor.getInt(0),
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getBlob(3),
+                            cursor.getString(4),
+                            cursor.getInt(5)
+                    ));
+                }
+            } catch (android.database.sqlite.SQLiteBlobTooBigException e) {
+                // If we still hit this, try to query without the blob and load it lazily or just skip
+                // For now, we'll log it and return what we have.
+                e.printStackTrace();
+            } finally {
+                cursor.close();
+            }
         }
 
         return list;
@@ -99,5 +103,24 @@ public class FoodDAO {
 
         return list;
     }
-}
 
+    public ArrayList<Food> getFoodByRestaurant(int restaurantId) {
+        ArrayList<Food> list = new ArrayList<>();
+
+        String query = "SELECT * FROM tblFood WHERE restaurant_id=" + restaurantId;
+        Cursor cursor = dbHelper.getData(query);
+
+        while (cursor.moveToNext()) {
+            list.add(new Food(
+                    cursor.getInt(0),
+                    cursor.getString(1),
+                    cursor.getString(2),
+                    cursor.getBlob(3),
+                    cursor.getString(4),
+                    cursor.getInt(5)
+            ));
+        }
+
+        return list;
+    }
+}

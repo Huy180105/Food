@@ -1,4 +1,4 @@
-package com.nhom8.foody_order_app.activity.ActivityImpl;
+package com.nhom8.foody_order_app.activity.admin;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.nhom8.foody_order_app.R;
 import com.nhom8.foody_order_app.adapter.admin_foodAdapter;
 import com.nhom8.foody_order_app.repository.food.admin_foodDao;
 

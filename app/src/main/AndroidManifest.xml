@@ -38,7 +38,13 @@
             android:name=".activity.ActivityImpl.SignInActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.ActivityImpl.IntroActivity"
+            android:name=".activity.ActivityImpl.ManagerHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.admin.admin_foodActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ActivityImpl.RoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
