@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.hoangtien2k3.foody_order_app'
+    namespace 'com.nhom8.foody_order_app'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.hoangtien2k3.foody_order_app"
+        applicationId "com.nhom8.foody_order_app"
         minSdk 26
         targetSdk 33
         versionCode 1
@@ -27,12 +27,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    // áp dụng binding
+    // Ã¡p dá»¥ng binding
     buildFeatures {
         viewBinding = true
     }
 
-    namespace 'com.hoangtien2k3.foody_order_app'
 }
 
 dependencies {

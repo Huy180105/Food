@@ -189,15 +189,19 @@ public class DAO {
         return foodDAO.getFoodById(id);
     }
 
-    public ArrayList<Food> getFoodByKeyWord(String keyword, Integer restaurantId) {
-        return foodDAO.searchFood(keyword, restaurantId);
+    public ArrayList<Food> getFoodByKeyWord(String keyword, String categoryId) {
+        return foodDAO.searchFood(keyword, categoryId);
+    }
+
+    public ArrayList<Food> getAllFood() {
+        return foodDAO.getAllFood();
     }
 
     public ArrayList<Food> getFoodByType(String type) {
         return foodDAO.getFoodByType(type);
     }
 
-    public ArrayList<Food> getFoodByRestaurant(Integer restaurantId) {
+    public ArrayList<Food> getFoodByRestaurant(int restaurantId) {
         return foodDAO.getFoodByRestaurant(restaurantId);
     }
 

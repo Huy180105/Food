@@ -7,17 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataInitFragmentHome {
-    // list áº£nh hiá»ƒn thá»‹ trong home slider
     public static final List<Photo> listPhoto = new ArrayList<>();
+
     static {
-        listPhoto.add(new Photo(R.drawable.image_banh_my));
-        listPhoto.add(new Photo(R.drawable.quan_com_tam_phuc_map));
-        listPhoto.add(new Photo(R.drawable.image_3));
-        listPhoto.add(new Photo(R.drawable.image_4));
-        listPhoto.add(new Photo(R.drawable.banner_rice));
-        listPhoto.add(new Photo(R.drawable.quan_com_tam_phuc_map));
-        listPhoto.add(new Photo(R.drawable.quan_xien_ban_phung_khoang));
-        listPhoto.add(new Photo(R.drawable.quan_banh_my_cho_phung_khoang));
+        listPhoto.add(new Photo(R.drawable.img_mien_bac));
+        listPhoto.add(new Photo(R.drawable.mb_pho_bo));
+        listPhoto.add(new Photo(R.drawable.img_mien_trung));
+        listPhoto.add(new Photo(R.drawable.mt_bun_bo));
+        listPhoto.add(new Photo(R.drawable.img_mien_nam));
+        listPhoto.add(new Photo(R.drawable.mn_com_tam));
     }
 }
-

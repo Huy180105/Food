@@ -1,6 +1,5 @@
 package com.nhom8.foody_order_app.activity.ActivityImpl;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,17 +21,26 @@ import com.nhom8.foody_order_app.model.User;
 import com.nhom8.foody_order_app.repository.DAO;
 
 public class SignInActivity extends AppCompatActivity {
+    private static final String MANAGER_USERNAME = "manager_nhom8";
+    private static final String MANAGER_PASSWORD = "nhom8@123";
+    private static final String CUSTOMER_USERNAME_KEY = "customer_username";
+    private static final String CUSTOMER_PASSWORD_KEY = "customer_password";
+    private static final String MANAGER_USERNAME_KEY = "manager_username";
+    private static final String MANAGER_PASSWORD_KEY = "manager_password";
+
+    public static final String PREFERENCES = "store_info";
+    public static DAO dao;
+
     private Button btnLogin;
-    private EditText txtUsername, txtPassword;
+    private EditText txtUsername;
+    private EditText txtPassword;
     private TextView validateUsername;
     private TextView validatePassword;
     private TextView textSignUpApp;
     private TextView textRoleSubtitle;
     private TextView textChangeRole;
     private TextView textLoginTitle;
-    public static final String PREFERENCES = "store_info";
     private SharedPreferences sharedPreferences;
-    public static DAO dao;
     private boolean isPasswordVisible = false;
     private String selectedRole;
 
@@ -43,14 +51,11 @@ public class SignInActivity extends AppCompatActivity {
 
         initializeUI();
         dao = new DAO(this);
-
         sharedPreferences = getSharedPreferences(PREFERENCES, Context.MODE_PRIVATE);
         selectedRole = resolveRole();
         setupRoleUi();
-        txtUsername.setText(sharedPreferences.getString("username", ""));
-        txtPassword.setText(sharedPreferences.getString("password", ""));
-
-        checkLogin();
+        populateRememberedCredentials();
+        setupLogin();
         setNextActivityListener();
     }
 
@@ -66,9 +71,11 @@ public class SignInActivity extends AppCompatActivity {
         textLoginTitle = findViewById(R.id.textView20);
     }
 
-    @SuppressLint("SetTextI18n")
-    private void checkLogin() {
+    private void setupLogin() {
         btnLogin.setOnClickListener(v -> {
+            validateUsername.setText("");
+            validatePassword.setText("");
+
             String username = txtUsername.getText().toString().trim();
             String password = txtPassword.getText().toString().trim();
 
@@ -78,7 +85,7 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             if (RoleSelectionActivity.ROLE_MANAGER.equals(selectedRole)) {
-                launchManagerHome();
+                handleManagerLogin(username, password);
                 return;
             }
 
@@ -89,25 +96,21 @@ public class SignInActivity extends AppCompatActivity {
             }
 
             if (isRightAuthentication) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString("username", userExist.getUsername());
-                editor.putString("password", userExist.getPassword());
-                editor.apply();
-
+                saveCredentials(CUSTOMER_USERNAME_KEY, CUSTOMER_PASSWORD_KEY, userExist.getUsername(), userExist.getPassword());
                 Intent intent = new Intent(SignInActivity.this, HomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 HomeActivity.user = userExist;
                 startActivity(intent);
-            } else {
-                if (!dao.checkUsername(username)) {
-                    validateUsername.setText(getResources().getString(R.string.error_username_login));
-                } else if (!dao.checkPasswordToCurrentUsername(username, password)) {
-                    validatePassword.setText(getResources().getString(R.string.error_password_login));
-                }
-                Toast.makeText(this, getResources().getString(R.string.error_information_login), Toast.LENGTH_SHORT).show();
+                finish();
+                return;
             }
 
-            validateUsername.setText("");
-            validatePassword.setText("");
+            if (!dao.checkUsername(username)) {
+                validateUsername.setText(getResources().getString(R.string.error_username_login));
+            } else if (!dao.checkPasswordToCurrentUsername(username, password)) {
+                validatePassword.setText(getResources().getString(R.string.error_password_login));
+            }
+            Toast.makeText(this, getResources().getString(R.string.error_information_login), Toast.LENGTH_SHORT).show();
         });
 
         findViewById(R.id.checkPassword).setOnClickListener(v -> togglePasswordVisibility());
@@ -129,6 +132,23 @@ public class SignInActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+    }
+
+    private void handleManagerLogin(String username, String password) {
+        if (!MANAGER_USERNAME.equals(username)) {
+            validateUsername.setText("Sai tài khoản quản lý.");
+            Toast.makeText(this, "Tài khoản này không thuộc quản lý.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!MANAGER_PASSWORD.equals(password)) {
+            validatePassword.setText("Sai mật khẩu quản lý.");
+            Toast.makeText(this, "Mật khẩu quản lý không đúng.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        saveCredentials(MANAGER_USERNAME_KEY, MANAGER_PASSWORD_KEY, username, password);
+        launchManagerHome();
     }
 
     private void togglePasswordVisibility() {
@@ -174,19 +194,37 @@ public class SignInActivity extends AppCompatActivity {
     private void setupRoleUi() {
         if (RoleSelectionActivity.ROLE_MANAGER.equals(selectedRole)) {
             textLoginTitle.setText("Đăng nhập quản lý");
-            textRoleSubtitle.setText("Sau khi đăng nhập, hệ thống sẽ mở trang quản lý đã nhập từ DacSan3Mien.");
+            textRoleSubtitle.setText("Dùng tài khoản quản lý riêng để vào khu vực quản lý.");
             textSignUpApp.setVisibility(View.GONE);
         } else {
             textLoginTitle.setText("Đăng nhập khách hàng");
-            textRoleSubtitle.setText("Đăng nhập để vào ứng dụng đặt đồ ăn.");
+            textRoleSubtitle.setText("Dùng tài khoản khách hàng để vào ứng dụng đặt đồ ăn.");
             textSignUpApp.setVisibility(View.VISIBLE);
         }
     }
 
+    private void populateRememberedCredentials() {
+        if (RoleSelectionActivity.ROLE_MANAGER.equals(selectedRole)) {
+            txtUsername.setText(sharedPreferences.getString(MANAGER_USERNAME_KEY, ""));
+            txtPassword.setText(sharedPreferences.getString(MANAGER_PASSWORD_KEY, ""));
+            return;
+        }
+
+        txtUsername.setText(sharedPreferences.getString(CUSTOMER_USERNAME_KEY, ""));
+        txtPassword.setText(sharedPreferences.getString(CUSTOMER_PASSWORD_KEY, ""));
+    }
+
+    private void saveCredentials(String usernameKey, String passwordKey, String username, String password) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(usernameKey, username);
+        editor.putString(passwordKey, password);
+        editor.apply();
+    }
+
     private void launchManagerHome() {
         Intent intent = new Intent(this, ManagerHomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
 }
-

@@ -1,73 +1,108 @@
-package com.nhom8.foody_order_app.activity.ActivityImpl;
+package com.nhom8.foody_order_app.repository.food;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import database.DatabaseHelper; // Nhớ import đúng file của nhóm trưởng
+import android.graphics.drawable.Drawable;
+import androidx.core.content.res.ResourcesCompat;
+import com.nhom8.foody_order_app.repositoryInit.DatabaseHandler;
 
 public class admin_foodDao {
-    private SQLiteDatabase db;
+    private DatabaseHandler dbHelper;
+    private Context context;
 
     public admin_foodDao(Context context) {
-
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
-        db = dbHelper.getWritableDatabase();
+        this.context = context;
+        dbHelper = new DatabaseHandler(context);
     }
 
-    // 1. Hàm lấy tất cả món ăn (Dùng để hiện lên ListView ban đầu)
     public Cursor layTatCa() {
-        // SQLite yêu cầu bảng phải có cột _id để CursorAdapter hoạt động
-        // Ở đây ta đổi tên cột 'id' thành '_id' bằng lệnh AS
-        return db.rawQuery("SELECT id AS _id, name, price, description, image, categoryId FROM Product", null);
+        String sql = "SELECT f.id AS _id, f.name, fs.price, f.description, f.image, f.restaurant_id AS categoryId " +
+                "FROM tblFood f LEFT JOIN tblFoodSize fs ON f.id = fs.food_id AND fs.size = 1";
+        return dbHelper.getReadableDatabase().rawQuery(sql, null);
     }
 
-    // 2. Hàm tìm kiếm món ăn theo tên
     public Cursor timKiem(String ten) {
-        // Sử dụng hàm LOWER để đồng nhất tìm kiếm không phân biệt hoa thường
-        // trim() để loại bỏ khoảng trắng thừa ở đầu/cuối chuỗi
         String tuKhoa = "%" + ten.trim().toLowerCase() + "%";
-
-        String sql = "SELECT id AS _id, name, price, description, image, categoryId " +
-                "FROM Product WHERE LOWER(name) LIKE ?";
-
-        return db.rawQuery(sql, new String[]{tuKhoa});
+        String sql = "SELECT f.id AS _id, f.name, fs.price, f.description, f.image, f.restaurant_id AS categoryId " +
+                "FROM tblFood f LEFT JOIN tblFoodSize fs ON f.id = fs.food_id AND fs.size = 1 " +
+                "WHERE LOWER(f.name) LIKE ?";
+        return dbHelper.getReadableDatabase().rawQuery(sql, new String[]{tuKhoa});
     }
 
-    // 3. Hàm thêm món ăn mới
     public long them(String ten, int gia, String moTa, String hinh, int loai) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues v = new ContentValues();
         v.put("name", ten);
-        v.put("price", gia);
         v.put("description", moTa);
-        v.put("image", hinh);
-        v.put("categoryId", loai);
-        return db.insert("Product", null, v);
+        v.put("restaurant_id", loai);
+        v.put("type", "General");
+
+        byte[] imageBlob = null;
+        int resID = context.getResources().getIdentifier(hinh, "drawable", context.getPackageName());
+        if (resID != 0) {
+            Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), resID, null);
+            imageBlob = dbHelper.convertDrawableToByteArray(drawable);
+        }
+        v.put("image", imageBlob);
+
+        long foodId = db.insert("tblFood", null, v);
+        if (foodId != -1) {
+            ContentValues vs = new ContentValues();
+            vs.put("food_id", foodId);
+            vs.put("size", 1);
+            vs.put("price", gia);
+            db.insert("tblFoodSize", null, vs);
+        }
+        return foodId;
     }
 
-    // 4. Hàm sửa món ăn
     public int sua(int id, String ten, int gia, String moTa, String hinh, int loai) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues v = new ContentValues();
         v.put("name", ten);
-        v.put("price", gia);
         v.put("description", moTa);
-        v.put("image", hinh);
-        v.put("categoryId", loai);
-        return db.update("Product", v, "id = ?", new String[]{String.valueOf(id)});
+        v.put("restaurant_id", loai);
+
+        int resID = context.getResources().getIdentifier(hinh, "drawable", context.getPackageName());
+        if (resID != 0) {
+            Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), resID, null);
+            byte[] imageBlob = dbHelper.convertDrawableToByteArray(drawable);
+            v.put("image", imageBlob);
+        }
+
+        int res = db.update("tblFood", v, "id = ?", new String[]{String.valueOf(id)});
+        
+        ContentValues vs = new ContentValues();
+        vs.put("price", gia);
+        int sizeUpdate = db.update("tblFoodSize", vs, "food_id = ? AND size = 1", new String[]{String.valueOf(id)});
+        if (sizeUpdate == 0) {
+            vs.put("food_id", id);
+            vs.put("size", 1);
+            db.insert("tblFoodSize", null, vs);
+        }
+        
+        return res;
     }
 
-    // 5. Hàm xóa món ăn
     public int xoa(int id) {
-        return db.delete("Product", "id = ?", new String[]{String.valueOf(id)});
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete("tblFoodSize", "food_id = ?", new String[]{String.valueOf(id)});
+        return db.delete("tblFood", "id = ?", new String[]{String.valueOf(id)});
     }
-    //xem
+
     public Cursor layTheoId(int id) {
-        String sql = "SELECT id AS _id, name, price, description, image, categoryId FROM Product WHERE id = ?";
-        return db.rawQuery(sql, new String[]{String.valueOf(id)});
+        String sql = "SELECT f.id AS _id, f.name, fs.price, f.description, f.image, f.restaurant_id AS categoryId " +
+                "FROM tblFood f LEFT JOIN tblFoodSize fs ON f.id = fs.food_id AND fs.size = 1 " +
+                "WHERE f.id = ?";
+        return dbHelper.getReadableDatabase().rawQuery(sql, new String[]{String.valueOf(id)});
     }
+
     public Cursor locTheoMien(int categoryId) {
-        String sql = "SELECT id AS _id, name, price, description, image, categoryId " +
-                "FROM Product WHERE categoryId = ?";
-        return db.rawQuery(sql, new String[]{String.valueOf(categoryId)});
+        String sql = "SELECT f.id AS _id, f.name, fs.price, f.description, f.image, f.restaurant_id AS categoryId " +
+                "FROM tblFood f LEFT JOIN tblFoodSize fs ON f.id = fs.food_id AND fs.size = 1 " +
+                "WHERE f.restaurant_id = ?";
+        return dbHelper.getReadableDatabase().rawQuery(sql, new String[]{String.valueOf(categoryId)});
     }
 }

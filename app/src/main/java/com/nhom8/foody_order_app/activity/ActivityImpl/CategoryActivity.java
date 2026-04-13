@@ -62,7 +62,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryActiv
 
     @Override
     public void setupSearchBar() {
-        // thanh tÃ¬m kiáº¿m thÃ´ng tin
+        // Thanh tìm kiếm thông tin
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -81,24 +81,24 @@ public class CategoryActivity extends AppCompatActivity implements CategoryActiv
 
     @Override
     public void loadRestaurantInformation() {
-        // thoat vá» trang chá»§
+        // Thoát về trang chủ
         image.setOnClickListener(view -> finish());
 
-        // load láº¡i táº¥t cáº£ thÃ´ng tin
+        // Load lại tất cả thông tin
         imageSync.setOnClickListener(view -> loadFoodData(null));
 
-        // tÃ¬m kiáº¿m thÃ´ng tin vá» Ä‘á»“ Äƒn trÃªn danh sÃ¡ch Ä‘á»“ Äƒn.
+        // Tìm kiếm thông tin về đồ ăn trên danh sách đồ ăn.
         setupSearchBar();
 
-        // Restaurant data: Ä‘áº©y thÃ´ng tin lÃªn
+        // Restaurant data: đẩy thông tin lên
         LinearLayout layoutRestaurant = findViewById(R.id.layout_restaurantInformation);
         restaurantId = intent_get_data.getIntExtra("restaurantId", -1);
         if(restaurantId != -1){
             Restaurant restaurant = dao.getRestaurantInformation(restaurantId);
             restaurantImage.setImageBitmap(DatabaseHandler.convertByteArrayToBitmap(restaurant.getImage()));
             tvRestaurantName.setText(restaurant.getName());
-            tvRestaurantAddress.setText(String.format("\t+ Äá»‹a Chá»‰: %s", restaurant.getAddress()));
-            tvRestaurantPhone.setText(String.format("\t+ Sá»‘ Äiá»‡n Thoáº¡i: %s", restaurant.getPhone()));
+            tvRestaurantAddress.setText(String.format("\t+ Địa Chỉ: %s", restaurant.getAddress()));
+            tvRestaurantPhone.setText(String.format("\t+ Số Điện Thoại: %s", restaurant.getPhone()));
         } else {
             layoutRestaurant.setVisibility(View.GONE);
         }
@@ -112,26 +112,24 @@ public class CategoryActivity extends AppCompatActivity implements CategoryActiv
 
         if(nameFoodOfThisRestaurant == null) {
             int getRestaurantId = intent_get_data.getIntExtra("restaurantId", -1);
-            System.out.println(getRestaurantId);
             if (getRestaurantId == -1){
                 String foodKeyword = intent_get_data.getStringExtra("nameFood");
                 foodArrayList = dao.getFoodByKeyWord(foodKeyword, null);
-                System.out.println(foodArrayList);
             } else {
                 foodArrayList = dao.getFoodByRestaurant(getRestaurantId);
             }
         } else {
-            foodArrayList = dao.getFoodByKeyWord(nameFoodOfThisRestaurant, restaurantId);
+            foodArrayList = dao.getFoodByKeyWord(nameFoodOfThisRestaurant, String.valueOf(restaurantId));
         }
 
-        // duyá»‡t qua danh sÃ¡ch sáº£n pháº©m
+        // Duyệt qua danh sách sản phẩm
         for(Food food : foodArrayList){
             Restaurant restaurant = dao.getRestaurantInformation(food.getRestaurantId());
             FoodSize foodSize = dao.getFoodDefaultSize(food.getId());
 
             FoodCard foodCard = new FoodCard(this, food, foodSize.getPrice(), restaurant.getName());
 
-            // click Ä‘Ãª hiá»ƒn thá»‹ thÃ´ng tin chi tiáº¿t
+            // Click để hiển thị thông tin chi tiết
             foodCard.setOnClickListener(view -> {
                 FoodDetailsActivity.foodSize = foodSize;
                 Intent intent = new Intent(this, FoodDetailsActivity.class);
@@ -143,7 +141,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryActiv
                 }
             });
 
-            // thÃªm thÃ´ng tin
+            // Thêm thông tin
             foodCartContainer.addView(foodCard);
         }
     }
