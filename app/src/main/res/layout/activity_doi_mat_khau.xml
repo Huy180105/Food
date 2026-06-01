@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp"
+    android:background="#FFFFFF">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp">
+
+        <ImageView
+            android:id="@+id/btnBackChangePass"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_revert"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            app:tint="#545454" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Đổi mật khẩu"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#FF5722"/>
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/etOldPassword"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:hint="Mật khẩu cũ"
+        android:inputType="textPassword"
+        android:layout_marginBottom="15dp"/>
+
+    <EditText
+        android:id="@+id/etNewPassword"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:hint="Mật khẩu mới"
+        android:inputType="textPassword"
+        android:layout_marginBottom="15dp"/>
+
+    <EditText
+        android:id="@+id/etConfirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:hint="Xác nhận mật khẩu mới"
+        android:inputType="textPassword"
+        android:layout_marginBottom="35dp"/>
+
+    <Button
+        android:id="@+id/btnConfirmChange"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:text="Lưu mật khẩu mới"
+        android:backgroundTint="#E65100"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"/>
+</LinearLayout>

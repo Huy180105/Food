@@ -40,11 +40,11 @@
     <string name="information_order_item">Đơn hàng của bạn đang được giao!\nTổng giá trị đơn hàng là </string>
     <string name="information_order_cancel">Đơn hàng của bạn đã bị hủy!\nTổng giá trị đơn hàng là  </string>
     <string name="information_order">Thông báo về đơn hàng.</string>
-    <string name="contact_information"> VND \nBạn có thể góp ý gì liên hệ Hoàng Anh Tiến - 0828007853</string>
+    <string name="contact_information"> VND \nBạn có thể góp ý gì liên hệ Foody Order App</string>
 
     <string name="title_intro">Chào mừng đến với foody-order-app!</string>
     <string name="contex_intro">Cảm ơn bạn đã sử dụng App! \nVui lòng điền thông tin cá nhân bằng cách click vào icon người dùng trong mục profile.</string>
-    <string name="example_full_name">Hoàng Anh Tiến</string>
+    <string name="example_full_name">Nguyễn Văn A</string>
     <string name="full_name">Họ và Tên</string>
     <string name="number_phone">Số điện thoại</string>
     <string name="hint_phone">0828–007-xxx</string>
@@ -113,11 +113,11 @@
     <string name="egg_banh_mi">Bánh mì trứng</string>
     <string name="money_text_short">13.000</string>
     <string name="example_food_describe">Pizza bao gồm nhiều chất dinh dưỡng chứa nhiều chất xơ và chất đạm thơm ngon mời bạn ăn nha!</string>
-    <string name="example_user_name">Hoàng Anh Tiến</string>
+    <string name="example_user_name">Nguyễn Văn A</string>
     <string name="example_date">26/09/2023</string>
 
     <string name="banh_mi_co_ba">Quán bánh mì Hải Anh</string>
-    <string name="banh_ngot_le_van_viet">Quán bánh ngọt Hoàng Tiến</string>
+    <string name="banh_ngot_le_van_viet">Quán bánh ngọt Lê Văn Việt</string>
     <string name="quan_com_Phuc_Map">Quán cơm tấm Mạnh Chiến</string>
     <string name="quan_kem_co_hai">Quán kem cô Hai</string>
     <string name="quan_tra_sua">Quán trà sữa Coffee House</string>

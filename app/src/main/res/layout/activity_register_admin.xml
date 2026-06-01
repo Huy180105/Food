@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_login"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="30dp"
+            android:text="Dang ky quan ly"
+            android:textColor="#2196F3"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etRegUser"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:hint="Tai khoan"
+            android:paddingLeft="15dp" />
+
+        <EditText
+            android:id="@+id/etRegPass"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:hint="Mat khau"
+            android:inputType="textPassword"
+            android:paddingLeft="15dp" />
+
+        <EditText
+            android:id="@+id/etRegFullName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:hint="Ho va ten"
+            android:paddingLeft="15dp" />
+
+        <EditText
+            android:id="@+id/etRegBirthDate"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:clickable="true"
+            android:focusable="false"
+            android:hint="Ngay sinh (Chon ngay)"
+            android:paddingLeft="15dp" />
+
+        <EditText
+            android:id="@+id/etRegPhone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:hint="So dien thoai"
+            android:inputType="phone"
+            android:paddingLeft="15dp" />
+
+        <EditText
+            android:id="@+id/etRegAddress"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:hint="Dia chi"
+            android:paddingLeft="15dp" />
+
+        <RadioGroup
+            android:id="@+id/rgGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nam"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:id="@+id/rbFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Nu"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:backgroundTint="#6200EE"
+            android:text="Dang ky"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvBackToLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Da co tai khoan? Dang nhap ngay"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+</ScrollView>

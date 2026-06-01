@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -54,8 +56,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "orderId INTEGER," +
                 "productId INTEGER," +
+                "size INTEGER DEFAULT 1," +
                 "quantity INTEGER," +
                 "price INTEGER)");
+
+        db.execSQL("CREATE TABLE Ingredient (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "name TEXT," +
+                "quantity REAL," +
+                "unit TEXT," +
+                "image TEXT)");
 
         insertSampleData(db);
     }
@@ -67,6 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Product");
         db.execSQL("DROP TABLE IF EXISTS Orders");
         db.execSQL("DROP TABLE IF EXISTS OrderDetail");
+        db.execSQL("DROP TABLE IF EXISTS Ingredient");
         onCreate(db);
     }
 
@@ -95,10 +106,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO Product VALUES (null,'Hủ tiếu',30000,'Hủ tiếu thanh ngọt.','mn_hu_tieu',3)");
         db.execSQL("INSERT INTO Product VALUES (null,'Bánh mì',20000,'Bánh mì Việt Nam.','mn_banh_mi',3)");
         db.execSQL("INSERT INTO Product VALUES (null,'Gỏi cuốn',25000,'Gỏi cuốn thanh mát.','mn_goi_cuon',3)");
+        db.execSQL("INSERT INTO Ingredient VALUES (null,'Gao nep',20,'kg','gao_nep')");
+        db.execSQL("INSERT INTO Ingredient VALUES (null,'Cha ca',15,'kg','cha_ca')");
+        db.execSQL("INSERT INTO Ingredient VALUES (null,'Banh pho',30,'kg','banh_pho')");
+        db.execSQL("INSERT INTO Ingredient VALUES (null,'Mam tom',10,'lit','mam_tom')");
     }
 
     // ================== USER ==================
-    public void addUser(String username, String password, String fullName,
+    public long addUser(String username, String password, String fullName,
                         String birthDate, String phone, String address,
                         String gender, String role) {
 
@@ -114,7 +129,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("gender", gender);
         values.put("role", role);
 
-        db.insert("User", null, values);
+        return db.insert("User", null, values);
     }
 
     public boolean checkLogin(String username, String password, String role) {
@@ -123,6 +138,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "SELECT * FROM User WHERE username=? AND password=? AND role=?",
                 new String[]{username, password, role});
         return cursor.getCount() > 0;
+    }
+
+    public Cursor getUserData(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT id, username, password, fullName AS name, birthDate AS date_of_birth, " +
+                        "phone, address, gender, role FROM User WHERE username=?",
+                new String[]{username});
+    }
+
+    public int updateUserPassword(String username, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("password", password);
+        return db.update("User", values, "username=?", new String[]{username});
+    }
+
+    public int updateUserProfile(String username, String fullName, String birthDate,
+                                 String phone, String address, String gender) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("fullName", fullName);
+        values.put("birthDate", birthDate);
+        values.put("phone", phone);
+        values.put("address", address);
+        values.put("gender", gender);
+        return db.update("User", values, "username=?", new String[]{username});
+    }
+
+    public int deleteUser(String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("User", "username=?", new String[]{username});
     }
 
     // ================== PRODUCT ==================
@@ -193,6 +240,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(orderId)});
     }
 
+    // ================== INGREDIENT ==================
+    public long addIngredient(String name, double quantity, String unit, String image) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("quantity", quantity);
+        values.put("unit", unit);
+        values.put("image", image);
+        return db.insert("Ingredient", null, values);
+    }
+
+    public Cursor getAllIngredients() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM Ingredient ORDER BY name", null);
+    }
+
+    public Cursor searchIngredient(String keyword) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery(
+                "SELECT * FROM Ingredient WHERE name LIKE ? ORDER BY name",
+                new String[]{"%" + keyword + "%"});
+    }
+
+    public int updateIngredient(int id, String name, double quantity, String unit, String image) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        values.put("quantity", quantity);
+        values.put("unit", unit);
+        values.put("image", image);
+        return db.update("Ingredient", values, "id=?", new String[]{String.valueOf(id)});
+    }
+
+    public int deleteIngredient(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("Ingredient", "id=?", new String[]{String.valueOf(id)});
+    }
+
     // ================== REPORT ==================
     public int getTotalRevenue() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -211,5 +296,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor getAllCustomer() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM User WHERE role='user'", null);
+    }
+
+    // ================== UTILS ==================
+    public static Bitmap convertByteArrayToBitmap(byte[] bytes) {
+        if (bytes == null) return null;
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    public static Bitmap getBitmapFromDrawable(Context context, String imageName) {
+        int resID = context.getResources().getIdentifier(imageName, "drawable", context.getPackageName());
+        if (resID == 0) return null;
+        return BitmapFactory.decodeResource(context.getResources(), resID);
     }
 }
